@@ -1,11 +1,12 @@
 console.clear();
 
 class Maze {
-  constructor(playerElement, rows, cols, mazeElement) {
+  constructor(playerElement, rows, cols, mazeElement, spaceSize) {
     this.player = playerElement;
     this.rows = rows;
     this.cols = cols;
     this.mazeElement = mazeElement;
+    this.spaceSize = spaceSize;
     this.currentPosition = null;
     this.start = null;
     this.end = null;
@@ -45,7 +46,7 @@ class Maze {
 
     this.updatePosition();
 
-    window.addEventListener('keypress', (e) => debounce(this.moveCharacter(e, mazeSpaceElements), 20));
+    window.addEventListener('keydown', (e) => debounce(this.moveCharacter(e, mazeSpaceElements), 20));
 
     mazeStartElement.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
   }
@@ -184,36 +185,39 @@ class Maze {
     const currentElement = mazeSpaceElements[this.currentPosition];
     const mazeOffSet = getMazeOffset();
     const playerOffSet = getPlayerOffset();
+    const scrollAmount = this.spaceSize * 2;
 
     // console.log(this.currentPosition, adjacentSpaces);
 
     if (e.key === 'w') {
-      if (playerOffSet.top <= 100 && mazeOffSet.top > 0) {
-        mazeContainer.scrollBy(0, -100);
+      if (playerOffSet.top <= scrollAmount && mazeOffSet.top > 0) {
+        mazeContainer.scrollBy(0, -scrollAmount);
       }
       if (!currentElement.classList.contains('top-border')) this.currentPosition -= this.cols;
     }
 
     if (e.key === 's') {
-      if (playerOffSet.bottom <= 100 && mazeOffSet.bottom > 0) {
-        mazeContainer.scrollBy(0, 100);
+      if (playerOffSet.bottom <= scrollAmount && mazeOffSet.bottom > 0) {
+        mazeContainer.scrollBy(0, scrollAmount);
       }
       if (!currentElement.classList.contains('bottom-border')) this.currentPosition += this.cols;
     }
 
     if (e.key === 'a') {
-      if (playerOffSet.left <= 100 && mazeOffSet.left > 0) {
-        mazeContainer.scrollBy(-100, 0);
+      if (playerOffSet.left <= scrollAmount && mazeOffSet.left > 0) {
+        mazeContainer.scrollBy(-scrollAmount, 0);
       }
       if (!currentElement.classList.contains('left-border')) this.currentPosition -= 1;
     }
 
     if (e.key === 'd') {
-      if (playerOffSet.right <= 100 && mazeOffSet.right > 0) {
-        mazeContainer.scrollBy(100, 0);
+      if (playerOffSet.right <= scrollAmount && mazeOffSet.right > 0) {
+        mazeContainer.scrollBy(scrollAmount, 0);
       }
       if (!currentElement.classList.contains('right-border')) this.currentPosition += 1;
     }
+
+    if (this.currentPosition === this.end) this.handleMazeComplete();
 
     this.updatePosition();
     // console.log(this.currentPosition);
@@ -222,8 +226,12 @@ class Maze {
   updatePosition () {
     // console.log(((this.currentPosition % this.cols) * 50));
     // console.log((Math.floor(this.currentPosition / this.cols) * 50));
-    document.documentElement.style.setProperty('--translateX', ((this.currentPosition % this.cols) * 50) + 'px');
-    document.documentElement.style.setProperty('--translateY', (Math.floor(this.currentPosition / this.cols) * 50) + 'px');
+    document.documentElement.style.setProperty('--translateX', ((this.currentPosition % this.cols) * this.spaceSize) + 'px');
+    document.documentElement.style.setProperty('--translateY', (Math.floor(this.currentPosition / this.cols) * this.spaceSize) + 'px');
+  }
+
+  handleMazeComplete() {
+    console.log('You did it!');
   }
 }
 
@@ -235,12 +243,12 @@ function handleFormSubmit(e) {
   const rows = document.querySelector('input[name="numRows"]').value * 1;
   const player = document.getElementById('player');
 
-  resizeElements(cols, rows);
+  const spaceSize = resizeElements(cols, rows);
 
   document.querySelector('.maze-container').classList.remove('hide');
   document.querySelector('input[type="submit"]').disabled = true;
 
-  return new Maze(player, cols, rows, mazeElement);
+  return new Maze(player, cols, rows, mazeElement, spaceSize);
 }
 
 
@@ -248,11 +256,15 @@ function resizeElements(cols, rows) {
   const width = window.innerWidth * .9;
   const height = window.innerHeight * .9;
   const square = Math.floor(Math.min(width, height));
+  const spaceSize = (square / 8);
 
   document.documentElement.style.setProperty('--width', square + 'px');
   document.documentElement.style.setProperty('--height', square + 'px');
   document.documentElement.style.setProperty('--cols', cols);
   document.documentElement.style.setProperty('--rows', rows);
+  document.documentElement.style.setProperty('--spaceSize', spaceSize + 'px');
+
+  return spaceSize;
 }
 
 function debounce(callback, waitTime) {

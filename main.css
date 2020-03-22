@@ -14,6 +14,7 @@ html {
   --width: ;
   --cols: ;
   --rows: ;
+  --spaceSize: 50px;
 
   --translateX: ;
   --translateY: ;
@@ -50,8 +51,8 @@ body {
   position: relative;
   width: fit-content;
   display: grid;
-  grid-template-columns: repeat(var(--cols), 50px);
-  grid-template-rows: repeat(var(--rows), 50px);
+  grid-template-columns: repeat(var(--cols), var(--spaceSize));
+  grid-template-rows: repeat(var(--rows), var(--spaceSize));
 
   border-bottom: 10px solid var(--blue);
   border-right: 10px solid var(--blue);
@@ -60,16 +61,17 @@ body {
 .player {
   margin-top: 10px;
   margin-left: 10px;
-  height: 40px;
-  width: 40px;
+  height: calc(var(--spaceSize) - 10px);
+  width: calc(var(--spaceSize) - 10px);
   position: absolute;
   top: 0;
   left: 0;
   z-index: 5;
 
-  background-color: plum;
+  /* background-color: plum; */
+  background: url('https://gitmasi.com/storage/assets/Idle-1-width-200.png') center center/contain no-repeat;
   transition: all 100ms;
-  transform: translate(var(--translateX), var(--translateY));
+  transform: translate3d(var(--translateX), var(--translateY), 0);
 }
 
 .maze-space {
@@ -101,7 +103,8 @@ body {
 } */
 
 .maze-end::before {
-  background: var(--yellow);
+  /* background: var(--yellow); */
+  background: url('https://gitmasi.com/storage/assets/portal-width-300.png') center center/contain no-repeat , var(--dark);
 }
 
 
