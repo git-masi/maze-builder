@@ -1,5 +1,6 @@
 html {
   font-size: 62.5%;
+  scroll-behavior: smooth;
 }
 
 * {
@@ -40,7 +41,9 @@ body {
 .maze-container {
   width: var(--width);
   height: var(--height);
-  overflow: scroll;
+  /* overflow: scroll; */
+  overflow: hidden;
+  scroll-behavior: smooth;
 }
 
 .maze {
@@ -93,9 +96,9 @@ body {
   opacity: .9;
 }
 
-.maze-current::before {
+/* .maze-current::before {
   background: var(--green);
-}
+} */
 
 .maze-end::before {
   background: var(--yellow);

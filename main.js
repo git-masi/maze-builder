@@ -182,26 +182,36 @@ class Maze {
 
   moveCharacter(e, mazeSpaceElements) {
     const currentElement = mazeSpaceElements[this.currentPosition];
+    const mazeOffSet = getMazeOffset();
+    const playerOffSet = getPlayerOffset();
 
     // console.log(this.currentPosition, adjacentSpaces);
 
     if (e.key === 'w') {
-      // console.log('w');
+      if (playerOffSet.top <= 100 && mazeOffSet.top > 0) {
+        mazeContainer.scrollBy(0, -100);
+      }
       if (!currentElement.classList.contains('top-border')) this.currentPosition -= this.cols;
     }
 
     if (e.key === 's') {
-      // console.log('s');
+      if (playerOffSet.bottom <= 100 && mazeOffSet.bottom > 0) {
+        mazeContainer.scrollBy(0, 100);
+      }
       if (!currentElement.classList.contains('bottom-border')) this.currentPosition += this.cols;
     }
 
     if (e.key === 'a') {
-      // console.log('a');
+      if (playerOffSet.left <= 100 && mazeOffSet.left > 0) {
+        mazeContainer.scrollBy(-100, 0);
+      }
       if (!currentElement.classList.contains('left-border')) this.currentPosition -= 1;
     }
 
     if (e.key === 'd') {
-      // console.log('d');
+      if (playerOffSet.right <= 100 && mazeOffSet.right > 0) {
+        mazeContainer.scrollBy(100, 0);
+      }
       if (!currentElement.classList.contains('right-border')) this.currentPosition += 1;
     }
 
@@ -217,12 +227,6 @@ class Maze {
   }
 }
 
-const form = document.getElementById('mazeForm');
-let mazeRef = null;
-
-form.addEventListener('submit', (e) => {
-  mazeRef = handleFormSubmit(e)
-});
 
 function handleFormSubmit(e) {
   e.preventDefault();
@@ -230,7 +234,6 @@ function handleFormSubmit(e) {
   const cols = document.querySelector('input[name="numCols"]').value * 1;
   const rows = document.querySelector('input[name="numRows"]').value * 1;
   const player = document.getElementById('player');
-  const mazeElement = document.querySelector('.maze');
 
   resizeElements(cols, rows);
 
@@ -239,6 +242,7 @@ function handleFormSubmit(e) {
 
   return new Maze(player, cols, rows, mazeElement);
 }
+
 
 function resizeElements(cols, rows) {
   const width = window.innerWidth * .9;
@@ -263,6 +267,39 @@ function debounce(callback, waitTime) {
     }, waitTime);
   };
 }
+
+
+function getMazeOffset() {
+  const top = mazeContainer.scrollTop;
+  const left = mazeContainer.scrollLeft;
+  return {
+    top,
+    left,
+    right: mazeElement.clientWidth - mazeContainer.clientWidth - left + 10,
+    bottom: mazeElement.clientHeight - mazeContainer.clientHeight - top + 10
+  }
+}
+
+function getPlayerOffset() {
+  const mRect = mazeContainer.getBoundingClientRect();
+  const pRect = mazeRef.player.getBoundingClientRect();
+
+  return {
+    top: pRect.top - mRect.top,
+    left: pRect.left - mRect.left,
+    right: mRect.right - pRect.right,
+    bottom: mRect.bottom - pRect.bottom
+  }
+}
+
+const form = document.getElementById('mazeForm');
+const mazeContainer = document.querySelector('.maze-container');
+const mazeElement = document.querySelector('.maze');
+let mazeRef = null;
+
+form.addEventListener('submit', (e) => {
+  mazeRef = handleFormSubmit(e)
+});
 
 // use to create maze immediately
 document.querySelector('input[type="submit"]').click();
