@@ -21,11 +21,16 @@
   <body>
     <h1>Maze Builder</h1>
 
-    <form id="mazeForm">
-      <input type="number" name="numCols" placeholder="How many columns?" value="20" min="2" max="40" required>
-      <input type="number" name="numRows" placeholder="How many rows?" value="20" min="2" max="40" required>
-      <input type="submit" value="Build Maze">
-    </form>
+    <div class="form-container">
+      <form id="mazeForm">
+        <input type="number" name="numCols" placeholder="Maze grid size 2 - 40" value="20" min="2" max="40" required>
+        <!-- maze must be square due to a bug -->
+        <!-- <input type="number" name="numRows" placeholder="How many rows?" value="20" min="2" max="40" required> -->
+        <input type="submit" value="Build Maze">
+      </form>
+      <p>Control your character with the "w", "a", "s", and "d" keys.</p>
+      <p>Maze it to the portal and you win!</p>
+    </div>
 
     <div class="maze-container hide">
       <div class="maze">

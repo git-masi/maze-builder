@@ -248,13 +248,14 @@ function handleFormSubmit(e) {
   e.preventDefault();
 
   const cols = document.querySelector('input[name="numCols"]').value * 1;
-  const rows = document.querySelector('input[name="numRows"]').value * 1;
+  // const rows = document.querySelector('input[name="numRows"]').value * 1;
+  const rows = cols; // maze must be square due to bug
   const player = document.getElementById('player');
 
   const spaceSize = resizeElements(cols, rows);
 
   document.querySelector('.maze-container').classList.remove('hide');
-  form.classList.add('hide');
+  document.querySelector('.form-container').classList.add('hide');
   document.querySelector('input[type="submit"]').disabled = true;
 
   return new Maze(player, cols, rows, mazeElement, spaceSize);
