@@ -43,9 +43,9 @@ class Maze {
     mazeStartElement.classList.add('maze-current');
     mazeEndElement.classList.add('maze-end');
 
-    let currentSpace = mazeStart;
+    this.updatePosition();
 
-    window.addEventListener('keypress', (e) => moveCharacter(e, currentSpace, cols, mazeAdjacencyList, mazeSpaceElements));
+    window.addEventListener('keypress', (e) => debounce(this.moveCharacter(e, mazeSpaceElements), 20));
 
     mazeStartElement.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
   }
@@ -180,34 +180,40 @@ class Maze {
     mazeSpaceElements.forEach(el => el.classList.remove('maze-space--visited'));
   }
 
-  moveCharacter(e, currentSpace, numCols, mazeAdjacencyList, mazeSpaceElements) {
-    const adjacentSpaces = this.getAdjacentSpaces(currentSpace, mazeAdjacencyList[currentSpace]);
-    const currentElement = mazeSpaceElements[currentSpace];
+  moveCharacter(e, mazeSpaceElements) {
+    const currentElement = mazeSpaceElements[this.currentPosition];
 
-    console.log(currentSpace, adjacentSpaces);
+    // console.log(this.currentPosition, adjacentSpaces);
 
     if (e.key === 'w') {
-      console.log('w');
-      console.log(currentElement);
-      if (!currentElement.classList.contains('top-border')) currentSpace -= numCols;
+      // console.log('w');
+      if (!currentElement.classList.contains('top-border')) this.currentPosition -= this.cols;
     }
 
     if (e.key === 's') {
-      console.log('s');
-      if (!currentElement.classList.contains('bottom-border')) currentSpace += numCols;
+      // console.log('s');
+      if (!currentElement.classList.contains('bottom-border')) this.currentPosition += this.cols;
     }
 
     if (e.key === 'a') {
-      console.log('a');
-      if (!currentElement.classList.contains('left-border')) currentSpace -= 1;
+      // console.log('a');
+      if (!currentElement.classList.contains('left-border')) this.currentPosition -= 1;
     }
 
     if (e.key === 'd') {
-      console.log('d');
-      if (!currentElement.classList.contains('right-border')) currentSpace += 1;
+      // console.log('d');
+      if (!currentElement.classList.contains('right-border')) this.currentPosition += 1;
     }
 
-    console.log(currentSpace);
+    this.updatePosition();
+    // console.log(this.currentPosition);
+  }
+
+  updatePosition () {
+    // console.log(((this.currentPosition % this.cols) * 50));
+    // console.log((Math.floor(this.currentPosition / this.cols) * 50));
+    document.documentElement.style.setProperty('--translateX', ((this.currentPosition % this.cols) * 50) + 'px');
+    document.documentElement.style.setProperty('--translateY', (Math.floor(this.currentPosition / this.cols) * 50) + 'px');
   }
 }
 
@@ -243,6 +249,19 @@ function resizeElements(cols, rows) {
   document.documentElement.style.setProperty('--height', square + 'px');
   document.documentElement.style.setProperty('--cols', cols);
   document.documentElement.style.setProperty('--rows', rows);
+}
+
+function debounce(callback, waitTime) {
+  let timeoutId;
+  return function (...args) {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    timeoutId = setTimeout(function () {
+      callback.apply(null, args);
+    }, waitTime);
+  };
 }
 
 // use to create maze immediately

@@ -22,14 +22,15 @@
     <h1>Maze Builder</h1>
 
     <form id="mazeForm">
-      <input type="number" name="numCols" placeholder="How many columns?" value="10" min="2" max="47" required>
-      <input type="number" name="numRows" placeholder="How many rows?" value="10" min="2" max="47" required>
+      <input type="number" name="numCols" placeholder="How many columns?" value="20" min="2" max="47" required>
+      <input type="number" name="numRows" placeholder="How many rows?" value="20" min="2" max="47" required>
       <input type="submit" value="Build Maze">
     </form>
 
     <div class="maze-container hide">
-      <div id="player" class="player"></div>
-      <div class="maze"></div>
+      <div class="maze">
+        <div id="player" class="player"></div>
+      </div>
     </div>
 
     <script src="main.js"></script>

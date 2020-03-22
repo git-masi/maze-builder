@@ -14,6 +14,9 @@ html {
   --cols: ;
   --rows: ;
 
+  --translateX: ;
+  --translateY: ;
+
   --dark: #2c3e50;
   --blue: #2980b9;
   --green: #27ae60;
@@ -41,6 +44,7 @@ body {
 }
 
 .maze {
+  position: relative;
   width: fit-content;
   display: grid;
   grid-template-columns: repeat(var(--cols), 50px);
@@ -48,6 +52,21 @@ body {
 
   border-bottom: 10px solid var(--blue);
   border-right: 10px solid var(--blue);
+}
+
+.player {
+  margin-top: 10px;
+  margin-left: 10px;
+  height: 40px;
+  width: 40px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+
+  background-color: plum;
+  transition: all 100ms;
+  transform: translate(var(--translateX), var(--translateY));
 }
 
 .maze-space {
