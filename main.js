@@ -1,38 +1,29 @@
 console.clear();
 
 class Maze {
-  constructor(playerElementId) {
-    this.player = document.getElementById(playerElementId);
+  constructor(playerElement, rows, cols, mazeElement) {
+    this.player = playerElement;
+    this.rows = rows;
+    this.cols = cols;
+    this.mazeElement = mazeElement;
     this.currentPosition = null;
     this.start = null;
     this.end = null;
+    this.longestPath = null;
 
-    this.buildMaze();
+    this.buildMaze(this.cols, this.rows, mazeElement);
   }
 
-  buildMaze() {
-    document.querySelector('.maze-container').classList.remove('hide');
-    document.querySelector('input[type="submit"]').disabled = true;
-
-    // convert to number
-    const cols = document.querySelector('input[name="numCols"]').value * 1;
-    const rows = document.querySelector('input[name="numRows"]').value * 1;
-
-    const width = window.innerWidth * .9;
-    const height = window.innerHeight * .9;
-    const square = Math.floor(Math.min(width, height));
-
-    document.documentElement.style.setProperty('--width', square + 'px');
-    document.documentElement.style.setProperty('--height', square + 'px');
-    document.documentElement.style.setProperty('--cols', cols);
-    document.documentElement.style.setProperty('--rows', rows);
-
-    const mazeElement = document.querySelector('.maze');
+  buildMaze(cols, rows, mazeElement) {
     const mazeObj = this.createMazeAdjacencyList(rows, cols);
     const mazeAdjacencyList = mazeObj.list;
-    const mazeStart = mazeObj.start;
+    this.start = mazeObj.start;
+    this.currentPosition = this.start;
+    const mazeStart = this.start;
     const longestPathObj = this.findLongestPath(mazeStart, mazeAdjacencyList);
-    const mazeEnd = longestPathObj.end;
+    this.end = longestPathObj.end;
+    this.longestPath = longestPathObj.longestPath;
+    const mazeEnd = this.end;
     const mazeSpaces = Object.keys(mazeAdjacencyList);
 
     for (let i = 0; i < mazeSpaces.length; i++) {
@@ -42,11 +33,7 @@ class Maze {
       mazeElement.appendChild(div);
     }
 
-    const mazeSpaceElements = document.querySelectorAll('.maze-space');
-
-    const showLongestPath = () => {
-      longestPathObj.longestPath.forEach(el => mazeSpaceElements[el].classList.add('maze-space--visited'));
-    }
+    const mazeSpaceElements = mazeElement.querySelectorAll('.maze-space');
 
     this.addBordersToMaze(mazeSpaceElements, mazeAdjacencyList, mazeSpaces, cols, rows * cols);
 
@@ -55,8 +42,6 @@ class Maze {
 
     mazeStartElement.classList.add('maze-current');
     mazeEndElement.classList.add('maze-end');
-
-    // mazeStartElement.addEventListener('mouseover', () => mouseOverMazeStart(mazeSpaceElements, mazeStartElement, mazeEndElement));
 
     let currentSpace = mazeStart;
 
@@ -152,20 +137,6 @@ class Maze {
     }
   }
 
-  mouseOverMazeStart(mazeSpaceElements, mazeStart, mazeEnd) {
-    mazeSpaceElements.forEach(el => {
-      if (el !== mazeStart && el !== mazeEnd) el.addEventListener('mouseover', mouseOverMazeSpace);
-    });
-  }
-
-  mouseOverMazeSpace(e) {
-    if (e.target.classList.contains('maze-space--visited')) {
-      e.target.classList.remove('maze-space--visited');
-    } else {
-      e.target.classList.add('maze-space--visited');
-    }
-  }
-
   findLongestPath(start, maze) {
     let currentPointInMaze = start;
     let longestPath = [start];
@@ -197,6 +168,16 @@ class Maze {
     const end = longestPath[longestPath.length - 1];
 
     return { longestPath, start, end };
+  }
+
+  showLongestPath () {
+    const mazeSpaceElements = this.mazeElement.querySelectorAll('.maze-space');
+    this.longestPath.forEach(el => mazeSpaceElements[el].classList.add('maze-space--visited'));
+  }
+
+  hideLongestPath () {
+    const mazeSpaceElements = this.mazeElement.querySelectorAll('.maze-space');
+    mazeSpaceElements.forEach(el => el.classList.remove('maze-space--visited'));
   }
 
   moveCharacter(e, currentSpace, numCols, mazeAdjacencyList, mazeSpaceElements) {
@@ -231,11 +212,39 @@ class Maze {
 }
 
 const form = document.getElementById('mazeForm');
+let mazeRef = null;
 
 form.addEventListener('submit', (e) => {
-  e.preventDefault();
-  new Maze('player');
+  mazeRef = handleFormSubmit(e)
 });
+
+function handleFormSubmit(e) {
+  e.preventDefault();
+
+  const cols = document.querySelector('input[name="numCols"]').value * 1;
+  const rows = document.querySelector('input[name="numRows"]').value * 1;
+  const player = document.getElementById('player');
+  const mazeElement = document.querySelector('.maze');
+
+  resizeElements(cols, rows);
+
+  document.querySelector('.maze-container').classList.remove('hide');
+  document.querySelector('input[type="submit"]').disabled = true;
+
+  return new Maze(player, cols, rows, mazeElement);
+}
+
+function resizeElements(cols, rows) {
+  const width = window.innerWidth * .9;
+  const height = window.innerHeight * .9;
+  const square = Math.floor(Math.min(width, height));
+
+  document.documentElement.style.setProperty('--width', square + 'px');
+  document.documentElement.style.setProperty('--height', square + 'px');
+  document.documentElement.style.setProperty('--cols', cols);
+  document.documentElement.style.setProperty('--rows', rows);
+}
 
 // use to create maze immediately
 document.querySelector('input[type="submit"]').click();
+console.dir(mazeRef);
