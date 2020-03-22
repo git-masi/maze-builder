@@ -232,6 +232,14 @@ class Maze {
 
   handleMazeComplete() {
     console.log('You did it!');
+    mazeContainer.classList.add('hide');
+
+    const gifs = ['https://giphy.com/embed/cOKjNdJDbqNCm4n0Jm', 'https://giphy.com/embed/YQBWwGLJtFDQIATck5'];
+    const random = Math.floor(Math.random() * gifs.length);
+
+    console.log(gifs[random]);
+
+    document.querySelector('iframe').setAttribute('src', gifs[random]);
   }
 }
 
@@ -246,6 +254,7 @@ function handleFormSubmit(e) {
   const spaceSize = resizeElements(cols, rows);
 
   document.querySelector('.maze-container').classList.remove('hide');
+  form.classList.add('hide');
   document.querySelector('input[type="submit"]').disabled = true;
 
   return new Maze(player, cols, rows, mazeElement, spaceSize);
@@ -314,5 +323,5 @@ form.addEventListener('submit', (e) => {
 });
 
 // use to create maze immediately
-document.querySelector('input[type="submit"]').click();
+// document.querySelector('input[type="submit"]').click();
 console.dir(mazeRef);
