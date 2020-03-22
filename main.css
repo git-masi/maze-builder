@@ -34,11 +34,6 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-#mazeForm {
-  /* temporary */
-  /* visibility: hidden; */
-}
-
 .maze-container {
   width: var(--width);
   height: var(--height);
