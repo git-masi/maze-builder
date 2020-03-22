@@ -1,0 +1,98 @@
+html {
+  font-size: 62.5%;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --height: ;
+  --width: ;
+  --cols: ;
+  --rows: ;
+
+  --dark: #2c3e50;
+  --blue: #2980b9;
+  --green: #27ae60;
+  --yellow: #f1c40f;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1.8rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#mazeForm {
+  /* temporary */
+  visibility: hidden;
+}
+
+.maze-container {
+  width: var(--width);
+  height: var(--height);
+  overflow: scroll;
+}
+
+.maze {
+  width: fit-content;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 50px);
+  grid-template-rows: repeat(var(--rows), 50px);
+
+  border-bottom: 10px solid var(--blue);
+  border-right: 10px solid var(--blue);
+}
+
+.maze-space {
+  /* width: 50px;
+  height: 50px; */
+  position: relative;
+  z-index: 2;
+}
+
+.maze-space::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
+  opacity: 1;
+
+  background: var(--dark);
+}
+
+.maze-space--visited::before {
+  opacity: .9;
+}
+
+.maze-current::before {
+  background: var(--green);
+}
+
+.maze-end::before {
+  background: var(--yellow);
+}
+
+
+.top-border {
+  border-top: 10px solid var(--blue);
+  /* border-top-color: var(--blue); */
+}
+
+.left-border {
+  border-left: 10px solid var(--blue);
+  /* border-left-color: var(--blue); */
+}
+
+.hide {
+  display: none;
+}
